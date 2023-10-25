@@ -1,4 +1,4 @@
-# -omputerGraphics_Lab2_BezierCurve
+# ComputerGraphics_Lab2_BezierCurve
 Laboratory work for Computer Graphics subject at KPI. Bezier curve rasterization.
 # Framework used
 Fully recoded clone of earlier version of TheCherno/Hazel with some custom changes
