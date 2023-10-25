@@ -9,3 +9,6 @@ Start by cloning the repository with git clone --recursive https://github.com/Sk
 
 2. Generating solution:
 After cloning run GenerateProjects.bat script file to generate a Visual Studio 2022 solution file
+
+# Finished
+Done in 20 hours. Poor quality code, needs refactoring but I have no time and reason to
