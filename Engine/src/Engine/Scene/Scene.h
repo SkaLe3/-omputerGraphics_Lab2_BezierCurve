@@ -1,0 +1,44 @@
+#pragma once
+
+#include "Engine/Core/Timestep.h"
+#include "Engine/Renderer/EditorCamera.h"
+
+#include "entt.hpp"
+namespace Engine {
+
+	class Entity;
+
+	class Scene
+	{
+	public:
+		Scene(); 
+		~Scene();
+
+		Entity CreateEntity(const std::string& name = std::string());
+		void DestroyEntity(Entity entity);
+
+		virtual void OnUpdateRuntime(Timestep ts);
+		void OnUpdateEditor(Timestep ts, EditorCamera& camera);
+		void OnViewportResize(uint32_t width, uint32_t height);
+
+		Entity GetPrimaryCameraEntity();
+
+		int32_t GetViewportWidth() { return m_ViewportWidth; }
+		int32_t GetViewportHeight() { return m_ViewportHeight; }
+	private:
+		template<typename T>
+		void OnComponentAdded(Entity entity, T& component);
+
+	private:
+		entt::registry m_Registry;
+		uint32_t m_ViewportWidth = 1, m_ViewportHeight = 1;
+
+		friend class Entity;
+		friend class SceneSerializer;
+		friend class SceneHierarchyPanel;
+		//friend class SettingsPanel;
+
+	};
+
+
+}
