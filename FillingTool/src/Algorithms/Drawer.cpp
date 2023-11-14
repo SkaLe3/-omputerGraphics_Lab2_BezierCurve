@@ -77,6 +77,57 @@ void Drawer::BresenhamLine(const glm::vec2& start, const glm::vec2& end, const g
 
 }
 
+void Drawer::BresenhamLineImage(std::vector<std::vector<glm::vec3>>& image, const glm::vec2& start, const glm::vec2& end, const glm::vec3& color /*= { 0.9f, 0.9f, 0.9f }*/, float level /*= 0.0f*/)
+{
+	glm::vec2 _start = { glm::round(start.x), glm::round(start.y) };
+	glm::vec2 _end = { glm::round(end.x), glm::round(end.y) };
+
+
+	float dx = glm::abs(_end.x - _start.x);
+	glm::vec2 s;
+	if (start.x < end.x)
+		s.x = 1;
+	else
+		s.x = -1;
+
+	float dy = -glm::abs(_end.y - _start.y);
+	if (_start.y < _end.y)
+		s.y = 1;
+	else
+		s.y = -1;
+
+	float err = dx + dy;
+
+
+
+	float err2;
+	while (true)
+	{
+		if (_start.x >= 0 && _start.x < image[0].size() && _start.y >= 0 && _start.y < image.size())
+		{
+			image[(int)_start.y][(int)_start.x] = color;
+		}
+
+		if (_start.x == _end.x && _start.y == _end.y)
+			break;
+		err2 = 2 * err;
+		if (err2 >= dy)
+		{
+			if (_start.x == _end.x)
+				break;
+			err += dy;
+			_start.x += s.x;
+		}
+		if (err2 <= dx)
+		{
+			if (_start.y == _end.y)
+				break;
+			err += dx;
+			_start.y += s.y;
+		}
+	}
+}
+
 void Drawer::BresenhamCircle(const glm::vec2& center, int32_t radius, const glm::vec4& color /*= { 0.9f, 0.9f, 0.9f, 1.0f }*/)
 {
 	int32_t x = 0;

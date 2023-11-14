@@ -4,6 +4,8 @@
 #include "Engine/Scene/Entity.h"
 
 #include "SceneHierarchyPanel.h"
+
+#include <glm/glm.hpp>
 class SettingsPanel
 {
 public:
@@ -16,9 +18,16 @@ public:
 
 	void OnImGuiRender();
 
+	glm::vec3 GetColor() { return glm::vec3(m_DrawColor[0], m_DrawColor[1], m_DrawColor[2]); }
+	int32_t GetSelectedAlgorithm() { return m_SelectedAlgorithm; }
+	
+
 private:
 	Engine::Ref<Engine::Scene> m_Context;
 	Engine::SceneHierarchyPanel* m_SceneHierarchy;
+
+	float m_DrawColor[3] = { 0.0f, 0.0f, 0.0f };
+	int32_t m_SelectedAlgorithm = -1;
 
 
 };

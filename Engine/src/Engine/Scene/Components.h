@@ -89,15 +89,19 @@ namespace Engine {
 			for (std::vector<glm::vec3>& row : Data)
 				row.resize(width);
 
-			float floatSeed = seed;
-			glm::vec3 first_col = { floatSeed / (floatSeed + seed % 4 ? 30 : 20), floatSeed / (floatSeed + seed % 3 ? 30 : 5), floatSeed / (floatSeed + seed % 6 ? 20 : 15) };
-			glm::vec3 second_col = { 0.9f, 0.9f, 0.9f };
+			float floatSeed = float(seed % 222) /  37.0f;
+			glm::vec3 first_col = {glm::clamp(glm::sin(floatSeed),0.1f, 0.9f ),
+				glm::clamp(glm::sin(floatSeed* floatSeed),0.1f, 0.9f),
+				glm::clamp(glm::cos(floatSeed),0.1f, 0.9f)};
+
+			glm::vec3 second_col = glm::vec3(1.0f) - first_col;
 
 			for (int32_t row = 0, height = Data.size(); row < height; ++row)
 				for (int32_t col = 0, width = Data[0].size(); col < width; ++col)
-					Data[row][col] = (row + col) * (col + seed) / (row+1) % 3 == 0 ? first_col : second_col;
+					Data[row][col] = (row + col) * (col + seed) / (row+1) % (( seed  % 9) + 1) == 0 ? first_col : second_col;
 		}
 		ImageComponent(int32_t seed) : ImageComponent(160, 90, seed) {}
+		ImageComponent(const std::vector<std::vector<glm::vec3>>& image) : Data(image) {}
 
 		std::vector<std::vector<glm::vec3>> Data;
 		float Alpha = 1.0f;

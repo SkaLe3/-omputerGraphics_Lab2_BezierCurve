@@ -11,6 +11,7 @@
 #include "CameraController.h"
 
 #include "Components/ImageRendererComponent.h"
+#include "Algorithms/Fill.h"
 
 #include <ctime>
 
@@ -45,8 +46,36 @@ void EditorLayer::OnAttach()
 	m_SettingsPanel.SetSceneHierarchy(&m_SceneHierarchyPanel);
 
 	m_ImageEntity = m_ActiveScene->CreateEntity("Image");
-	m_ImageEntity.AddComponent<ImageComponent>(16, 9, 12);
+	m_ImageEntity.AddComponent<ImageComponent>(160, 90, 31);
 	m_ImageEntity.AddComponent<NativeScriptComponent>().Bind<ImageRendererComponent>();
+
+
+	// polygon
+	std::vector<std::vector<glm::vec3>> im;
+	im.resize(90);
+	for (std::vector<glm::vec3>& row : im)
+	{
+		row.resize(160);
+		for (glm::vec3& pixel : row)
+			pixel = { 1.0f, 1.0f, 1.0f };
+	}
+
+	Drawer::BresenhamLineImage(im, { 80, 45 }, { 80, 20 }, { 0.0f, 0.0f, 0.0f });
+	Drawer::BresenhamLineImage(im, { 80, 20 }, { 120, 35 }, { 0.0f, 0.0f, 0.0f });
+	Drawer::BresenhamLineImage(im, { 120, 35 }, { 110, 70 }, { 0.0f, 0.0f, 0.0f });
+	Drawer::BresenhamLineImage(im, { 110, 70 }, { 60, 70 }, { 0.0f, 0.0f, 0.0f });
+	Drawer::BresenhamLineImage(im, { 60, 70 }, { 80, 45 }, { 0.0f, 0.0f, 0.0f });
+
+	ImageComponent& ic = m_ImageEntity.GetComponent<ImageComponent>();
+	ic.Data = im;
+
+	Entity seconImage = m_ActiveScene->CreateEntity("Image2");
+	seconImage.GetComponent<TransformComponent>().Translation = { 0, 100, 0 };
+
+	seconImage.AddComponent<ImageComponent>(160, 90, 30);
+	seconImage.AddComponent<NativeScriptComponent>().Bind<ImageRendererComponent>();
+
+
 	
 }
 
@@ -218,14 +247,36 @@ bool EditorLayer::OnMouseClick(MouseButtonPressedEvent& e)
 			ImageRendererComponent* irc = dynamic_cast<ImageRendererComponent*>(sentity.GetComponent<NativeScriptComponent>().Instance);
 			if (irc)
 			{
+
 				ImageComponent& ic = sentity.GetComponent<ImageComponent>();
 				TransformComponent& tc = sentity.GetComponent<TransformComponent>();
 
-				// FloodFill(ic, WindowToWorld(Input::GetMousePosition()));
 				glm::vec2 trans = { (int)tc.Translation.x,(int)tc.Translation.y};
 				glm::vec2 cords = WindowToWorld(Input::GetMousePosition()) - trans;
 
-				EG_INFO("Coords:", (int)cords.x, -(int)cords.y);
+				int32_t x = cords.x;
+				int32_t y = -cords.y;
+
+				if (!(x >= 0 && x < ic.Data[0].size() && y >= 0 && y < ic.Data.size()))
+					return true;
+				int32_t algo = m_SettingsPanel.GetSelectedAlgorithm();
+
+				if (algo == 0)
+				{
+					Fill::FloodFill(ic.Data, x, y, glm::vec3(ic.Data[y][x]), m_SettingsPanel.GetColor());
+				}
+				else if ( algo == 1)
+				{
+
+				}
+				else if ( algo == 2)
+				{
+				}
+				else if ( algo == 3)
+				{
+
+				}
+
 			}
 		}
 	}
