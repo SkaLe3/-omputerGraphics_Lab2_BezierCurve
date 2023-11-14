@@ -80,11 +80,26 @@ namespace Engine {
 		}
 
 	};
-	struct ControlPointComponent
+	struct ImageComponent
 	{
-		glm::vec3 Translation{ 0.0f, 0.0f, 0.0f };
-		ControlPointComponent() = default;
-		ControlPointComponent(const ControlPointComponent&) = default;
-		ControlPointComponent(const glm::vec3& translation) : Translation(translation) {}
+	public:
+		ImageComponent(int32_t width, int32_t height, int32_t seed) 
+		{
+			Data.resize(height);
+			for (std::vector<glm::vec3>& row : Data)
+				row.resize(width);
+
+			float floatSeed = seed;
+			glm::vec3 first_col = { floatSeed / (floatSeed + seed % 4 ? 30 : 20), floatSeed / (floatSeed + seed % 3 ? 30 : 5), floatSeed / (floatSeed + seed % 6 ? 20 : 15) };
+			glm::vec3 second_col = { 0.9f, 0.9f, 0.9f };
+
+			for (int32_t row = 0, height = Data.size(); row < height; ++row)
+				for (int32_t col = 0, width = Data[0].size(); col < width; ++col)
+					Data[row][col] = (row + col) * (col + seed) / (row+1) % 3 == 0 ? first_col : second_col;
+		}
+		ImageComponent(int32_t seed) : ImageComponent(160, 90, seed) {}
+
+		std::vector<std::vector<glm::vec3>> Data;
+		float Alpha = 1.0f;
 	};
 }

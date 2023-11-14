@@ -171,7 +171,7 @@ namespace Engine {
 	{
 	}
 	template<>
-	void Scene::OnComponentAdded<ControlPointComponent>(Entity entity, ControlPointComponent& component)
+	void Scene::OnComponentAdded<ImageComponent>(Entity entity, ImageComponent& component)
 	{
 	}
 }
