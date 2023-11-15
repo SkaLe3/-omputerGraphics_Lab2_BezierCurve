@@ -125,7 +125,7 @@ bool Fill::ScanlineFill(std::vector<std::vector<glm::vec3>>& image, const std::v
 		// Find intersections of the scanline with each edge
 		for (const ScanlineEdge& edge : edges)
 		{
-			if (y >= edge.ymin && y <= edge.ymax)
+			if (y >= edge.ymin && y < edge.ymax)
 			{
 				int x = static_cast<int>(edge.x + edge.slope * (y - edge.ymin));
 				intersections.push_back(x);
@@ -135,13 +135,6 @@ bool Fill::ScanlineFill(std::vector<std::vector<glm::vec3>>& image, const std::v
 		// Sort intersections
 		std::sort(intersections.begin(), intersections.end());
 
-		// Erase the duplicates
-		if (intersections.size() > 2)
-		{
-		auto last = std::unique(intersections.begin(), intersections.end());
-		intersections.erase(last, intersections.end());
-
-		}
 
 		// Fill between pairs of intersections
 		for (size_t i = 0; i < intersections.size(); i += 2)

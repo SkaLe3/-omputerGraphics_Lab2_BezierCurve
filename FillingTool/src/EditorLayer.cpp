@@ -65,14 +65,14 @@ void EditorLayer::OnAttach()
 	ImageComponent& ic = m_ImageEntity.GetComponent<ImageComponent>();
 
 
-	std::vector<glm::vec2> vertices; //= {
-// 		{250, 300},
-// 		{750, 50},
-// 		{1250, 300},
-// 		{1000, 800},
-// 		{500, 800}
-// 	};
-// 	ic.Polygons.push_back(vertices);
+	std::vector<glm::vec2> vertices= {
+		{250, 300},
+		{750, 50},
+		{1250, 300},
+		{1000, 800},
+		{500, 800}
+	};
+	ic.Polygons.push_back(vertices);
 
 	vertices  = {
 		{100, 100},
