@@ -1,4 +1,4 @@
-# ComputerGraphics_Lab2_BezierCurve
+# ComputerGraphics-Labs
 Laboratory work for Computer Graphics subject at KPI.
 ## Projects:
 1. Bezier Curve Editor
