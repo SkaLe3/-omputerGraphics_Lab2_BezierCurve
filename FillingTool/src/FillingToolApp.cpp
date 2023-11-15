@@ -6,7 +6,7 @@
 class FillingTool : public Engine::Application
 {
 public:
-	FillingTool() : Engine::Application("Editor")
+	FillingTool() : Engine::Application("Filling Tool")
 	{
 		PushLayer(new EditorLayer());
 	}
