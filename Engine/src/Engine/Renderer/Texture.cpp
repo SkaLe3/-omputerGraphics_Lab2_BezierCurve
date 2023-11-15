@@ -30,4 +30,5 @@ namespace Engine {
 		EG_ASSERT(false, "Unknown Renderer API");
 		return nullptr;
 	}
+
 }

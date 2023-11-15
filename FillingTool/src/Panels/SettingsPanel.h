@@ -18,16 +18,20 @@ public:
 
 	void OnImGuiRender();
 
-	glm::vec3 GetColor() { return glm::vec3(m_DrawColor[0], m_DrawColor[1], m_DrawColor[2]); }
+	glm::vec3 GetColor() { return m_DrawColor; }
+	glm::vec3 GetBoundaryColor() {	return m_BoundaryColor;}
+	void SetBoundaryColor(const glm::vec3& color) { m_BoundaryColor = color; }
 	int32_t GetSelectedAlgorithm() { return m_SelectedAlgorithm; }
-	
+	void SetExecutionTime(float time) { m_AlgoTime = time; }
 
 private:
 	Engine::Ref<Engine::Scene> m_Context;
 	Engine::SceneHierarchyPanel* m_SceneHierarchy;
 
-	float m_DrawColor[3] = { 0.0f, 0.0f, 0.0f };
+	glm::vec3 m_DrawColor = { 0.0f, 0.0f, 0.0f };
+	glm::vec3 m_BoundaryColor = { 0.0f, 0.0f, 0.0f };
 	int32_t m_SelectedAlgorithm = -1;
 
+	float m_AlgoTime = 0;
 
 };

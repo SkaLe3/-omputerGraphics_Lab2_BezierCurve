@@ -6,10 +6,39 @@ void ImageRendererComponent::OnUpdate(Engine::Timestep ts)
 {
 	ImageComponent& ic = m_Entity.GetComponent<ImageComponent>();
 	TransformComponent& tc = m_Entity.GetComponent<TransformComponent>();
+	SpriteRendererComponent& src = m_Entity.GetComponent<SpriteRendererComponent>();
 
-	for (int32_t row = 0, height = ic.Data.size(); row < height; ++row)
-		for (int32_t col = 0, width = ic.Data[0].size(); col < width; ++col)
-			Renderer2D::DrawQuad(glm::vec3((int)tc.Translation.x + col + 0.5 ,(int)tc.Translation.y - row - 0.5,(int)tc.Translation.z ), { 1.0f, 1.0f }, glm::vec4(ic.Data[row][col], ic.Alpha));
-			//Renderer2D::DrawQuad(glm::vec3((int)tc.Translation.x + col, (int)tc.Translation.y + row, (int)tc.Translation.z), { 1.0f, 1.0f }, {0.9f, 0.9f, 0.9f, 1.0f});
+	tc.Scale.x = ic.Data[0].size();
+	tc.Scale.y = ic.Data.size();
 
+	if (!ic.Changed)
+		return;
+
+
+	// Ensure imageData is not empty
+	if (!ic.Data.empty() && !ic.Data[0].empty()) {
+		// Flatten the data and convert to uint32_t
+		std::vector<uint32_t> flattenedData;
+		flattenedData.reserve(ic.Data.size() * ic.Data[0].size());
+
+		for (const auto& row : ic.Data) {
+			for (const auto& pixel : row) {
+				// Convert each component to uint8_t and pack into a uint32_t
+				uint8_t r = static_cast<uint8_t>(pixel.r * 255.0f);
+				uint8_t g = static_cast<uint8_t>(pixel.g * 255.0f);
+				uint8_t b = static_cast<uint8_t>(pixel.b * 255.0f);
+				uint8_t a = static_cast<uint8_t>(ic.Alpha * 255.0f);
+
+				flattenedData.emplace_back((a << 24) | (b << 16) | (g << 8) | r);
+			}
+		}
+
+		// Get a pointer to the data and the size of the data
+		void* dataPtr = static_cast<void*>(flattenedData.data());
+		std::size_t dataSize = flattenedData.size() * sizeof(uint32_t);
+	src.Texture = Texture2D::Create(tc.Scale.x, tc.Scale.y);
+	src.Texture->SetData(dataPtr, dataSize);
+	ic.Changed = false;
+	}
+	
 }

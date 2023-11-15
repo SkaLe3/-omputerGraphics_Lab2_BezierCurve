@@ -2,6 +2,9 @@
 
 #include "Engine/Renderer/Texture.h"
 #include <glad/glad.h>
+#include <vector>
+#include <glm/glm.hpp>
+
 namespace Engine {
 
 	class OpenGLTexture2D : public Texture2D

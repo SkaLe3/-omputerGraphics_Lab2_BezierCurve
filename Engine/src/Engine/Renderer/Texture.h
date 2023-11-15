@@ -1,6 +1,8 @@
 #pragma once
 #include <string.h>
 #include "Engine/Core/Core.h"
+#include <glm/glm.hpp>
+
 namespace Engine {
 
 	class Texture
@@ -22,6 +24,7 @@ namespace Engine {
 	{
 	public:
 		static Ref<Texture2D> Create(uint32_t width, uint32_t height);
+
 		static Ref<Texture2D> Create(const std::string& path);
 	};
 }

@@ -1,5 +1,6 @@
 #include "EditorLayer.h"
 #include <imgui/imgui.h>
+#include <Engine/Events/MouseEvent.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -14,6 +15,8 @@
 #include "Algorithms/Fill.h"
 
 #include <ctime>
+
+#include <chrono>
 
 
 
@@ -36,7 +39,7 @@ void EditorLayer::OnAttach()
 	
 	m_CameraEntity = m_ActiveScene->CreateEntity("Main Camera");
 	m_CameraEntity.AddComponent<CameraComponent>();
-	m_CameraEntity.GetComponent<CameraComponent>().Camera.SetOrthographic(300.0f, -5.0f, 5.0f);
+	m_CameraEntity.GetComponent<CameraComponent>().Camera.SetOrthographic(2000.0f, -5.0f, 5.0f);
 	m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 
 
@@ -46,34 +49,53 @@ void EditorLayer::OnAttach()
 	m_SettingsPanel.SetSceneHierarchy(&m_SceneHierarchyPanel);
 
 	m_ImageEntity = m_ActiveScene->CreateEntity("Image");
-	m_ImageEntity.AddComponent<ImageComponent>(160, 90, 31);
+	m_ImageEntity.AddComponent<ImageComponent>(1600, 900, 3);
 	m_ImageEntity.AddComponent<NativeScriptComponent>().Bind<ImageRendererComponent>();
+	m_ImageEntity.AddComponent<SpriteRendererComponent>();
 
 
-	// polygon
 	std::vector<std::vector<glm::vec3>> im;
-	im.resize(90);
+	im.resize(900);
 	for (std::vector<glm::vec3>& row : im)
 	{
-		row.resize(160);
+		row.resize(1600);
 		for (glm::vec3& pixel : row)
 			pixel = { 1.0f, 1.0f, 1.0f };
 	}
-
-	Drawer::BresenhamLineImage(im, { 80, 45 }, { 80, 20 }, { 0.0f, 0.0f, 0.0f });
-	Drawer::BresenhamLineImage(im, { 80, 20 }, { 120, 35 }, { 0.0f, 0.0f, 0.0f });
-	Drawer::BresenhamLineImage(im, { 120, 35 }, { 110, 70 }, { 0.0f, 0.0f, 0.0f });
-	Drawer::BresenhamLineImage(im, { 110, 70 }, { 60, 70 }, { 0.0f, 0.0f, 0.0f });
-	Drawer::BresenhamLineImage(im, { 60, 70 }, { 80, 45 }, { 0.0f, 0.0f, 0.0f });
-
 	ImageComponent& ic = m_ImageEntity.GetComponent<ImageComponent>();
+
+
+	std::vector<glm::vec2> vertices; //= {
+// 		{250, 300},
+// 		{750, 50},
+// 		{1250, 300},
+// 		{1000, 800},
+// 		{500, 800}
+// 	};
+// 	ic.Polygons.push_back(vertices);
+
+	vertices  = {
+		{100, 100},
+		{500, 50 },
+		{800, 200},
+		{900, 500},
+		{500, 800},
+		{200, 700}
+	};
+
 	ic.Data = im;
+	ic.Polygons.push_back(vertices);
+	DrawPolygons(ic.Data, ic.Polygons, { 0.0f, 0.0f, 0.0f });
+
+
+
 
 	Entity seconImage = m_ActiveScene->CreateEntity("Image2");
-	seconImage.GetComponent<TransformComponent>().Translation = { 0, 100, 0 };
+	seconImage.GetComponent<TransformComponent>().Translation = { 0, 1000, 0 };
 
-	seconImage.AddComponent<ImageComponent>(160, 90, 30);
+	seconImage.AddComponent<ImageComponent>(1600, 900, 112);
 	seconImage.AddComponent<NativeScriptComponent>().Bind<ImageRendererComponent>();
+	seconImage.AddComponent<SpriteRendererComponent>();
 
 
 	
@@ -252,29 +274,49 @@ bool EditorLayer::OnMouseClick(MouseButtonPressedEvent& e)
 				TransformComponent& tc = sentity.GetComponent<TransformComponent>();
 
 				glm::vec2 trans = { (int)tc.Translation.x,(int)tc.Translation.y};
-				glm::vec2 cords = WindowToWorld(Input::GetMousePosition()) - trans;
+				glm::vec2 cords = WindowToWorld(Input::GetMousePosition()) + glm::vec2{tc.Scale.x/2.0, tc.Scale.y/2.0} - trans;
 
 				int32_t x = cords.x;
-				int32_t y = -cords.y;
+				int32_t y = cords.y;
 
 				if (!(x >= 0 && x < ic.Data[0].size() && y >= 0 && y < ic.Data.size()))
 					return true;
-				int32_t algo = m_SettingsPanel.GetSelectedAlgorithm();
 
-				if (algo == 0)
+				if (e.GetMouseButton() == Mouse::ButtonLeft)
 				{
-					Fill::FloodFill(ic.Data, x, y, glm::vec3(ic.Data[y][x]), m_SettingsPanel.GetColor());
-				}
-				else if ( algo == 1)
-				{
+					auto start = std::chrono::high_resolution_clock::now();
+					int32_t algo = m_SettingsPanel.GetSelectedAlgorithm();
+
+					if (algo == 0)
+					{
+						ic.Changed =  Fill::FloodFill(ic.Data, x, y, glm::vec3(ic.Data[y][x]), m_SettingsPanel.GetColor());
+					}
+					else if (algo == 1)
+					{
+						ic.Changed = Fill::BoundaryFill(ic.Data, x, y, m_SettingsPanel.GetBoundaryColor(), m_SettingsPanel.GetColor());
+					}
+					else if (algo == 2)
+					{
+						std::vector<int> insidePolygons = findPolygonsIndices(cords, ic.Polygons);
+						
+						for (int idx : insidePolygons) {
+							std::cout << "true";
+							ic.Changed |= Fill::ScanlineFill(ic.Data, ic.Polygons[idx], m_SettingsPanel.GetColor());
+						}
+					}
+					else if (algo == 3)
+					{
+						ic.Changed = Fill::SpanFill(ic.Data, x, y, m_SettingsPanel.GetColor(), glm::vec3(ic.Data[y][x]));
+					}
+					auto stop = std::chrono::high_resolution_clock::now();
+					auto duration = std::chrono::duration_cast<std::chrono::duration<float>>(stop - start).count();
+
+					m_SettingsPanel.SetExecutionTime(duration);
 
 				}
-				else if ( algo == 2)
+				else if (e.GetMouseButton() == Mouse::ButtonRight)
 				{
-				}
-				else if ( algo == 3)
-				{
-
+					m_SettingsPanel.SetBoundaryColor(ic.Data[y][x]);
 				}
 
 			}
