@@ -3,6 +3,11 @@ Laboratory work for Computer Graphics subject at KPI.
 ## Projects:
 1. Bezier Curve Editor
 2. Bucket-Filling Tool
+   Algorithms used:
+   * Flood Fill
+   * Boundary Fill
+   * Scanline Fill
+   * Span Fill
 
 # How to try:
 1. Downloading the repository:
