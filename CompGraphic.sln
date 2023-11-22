@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine\Engine.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FillingTool", "FillingTool\FillingTool.vcxproj", "{888C1076-F441-896B-7D36-8342E9EA7F6F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Fractals", "Fractals\Fractals.vcxproj", "{55B3A746-4180-0252-6A99-F0F956C537E0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -51,6 +53,10 @@ Global
 		{888C1076-F441-896B-7D36-8342E9EA7F6F}.Debug|x64.Build.0 = Debug|x64
 		{888C1076-F441-896B-7D36-8342E9EA7F6F}.Release|x64.ActiveCfg = Release|x64
 		{888C1076-F441-896B-7D36-8342E9EA7F6F}.Release|x64.Build.0 = Release|x64
+		{55B3A746-4180-0252-6A99-F0F956C537E0}.Debug|x64.ActiveCfg = Debug|x64
+		{55B3A746-4180-0252-6A99-F0F956C537E0}.Debug|x64.Build.0 = Debug|x64
+		{55B3A746-4180-0252-6A99-F0F956C537E0}.Release|x64.ActiveCfg = Release|x64
+		{55B3A746-4180-0252-6A99-F0F956C537E0}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
