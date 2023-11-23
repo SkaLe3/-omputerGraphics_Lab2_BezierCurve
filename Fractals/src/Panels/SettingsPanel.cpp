@@ -12,16 +12,14 @@
 using namespace Engine;
 
 
-SettingsPanel::SettingsPanel(EditorLayer* layer)
-{
-	m_Layer = layer;
-}
-
 void SettingsPanel::OnImGuiRender()
 {
 	ImGui::Begin("Settings");
 
-
+	if (ImGui::Selectable("Koch Snowflake", m_Selected == 0, 0, ImVec2{ 350, 30 }))
+		m_Fractal->CreateShader("assets/shaders/KochSnowflake.glsl");
+	if (ImGui::Selectable("Mandelbrot", m_Selected == 0, 0, ImVec2{ 350, 30 }))
+		m_Fractal->CreateShader("assets/shaders/Mandelbrot.glsl");
 
 	ImGui::End();
 }

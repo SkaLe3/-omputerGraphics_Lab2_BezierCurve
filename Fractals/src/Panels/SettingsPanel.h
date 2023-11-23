@@ -1,8 +1,8 @@
 #pragma once
-#include "Engine/Core/Core.h"
-
+#include <Engine.h>
 
 #include <glm/glm.hpp>
+#include "Fractals.h"
 
 class EditorLayer;
 
@@ -10,15 +10,11 @@ class SettingsPanel
 {
 public:
 	SettingsPanel() = default;
-	SettingsPanel(EditorLayer* layer);
-
 
 	void OnImGuiRender();
-
-
+	void SetContext(Engine::Ref<Fractal> fr) { m_Fractal = fr; }
 
 private:
-
-	EditorLayer* m_Layer;
-
+	Engine::Ref<Fractal> m_Fractal;
+	int32_t m_Selected;
 };

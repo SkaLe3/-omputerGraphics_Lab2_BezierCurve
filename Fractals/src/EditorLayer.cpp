@@ -10,14 +10,16 @@
 #include "Engine/Utils/PlatformUtils.h"
 
 #include "CameraController.h"
+#include <Engine/Renderer/Shader.h>
 
 
 
 
 
 EditorLayer::EditorLayer()
-	: Layer(), m_SettingsPanel(this)
+	: Layer()
 {
+	m_Fractal = CreateRef<Fractal>();
 }
 
 void EditorLayer::OnAttach()
@@ -34,10 +36,10 @@ void EditorLayer::OnAttach()
 	
 	m_CameraEntity = m_ActiveScene->CreateEntity("Main Camera");
 	m_CameraEntity.AddComponent<CameraComponent>();
-	m_CameraEntity.GetComponent<CameraComponent>().Camera.SetOrthographic(2000.0f, -5.0f, 5.0f);
-	m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+	m_CameraEntity.GetComponent<CameraComponent>().Camera.SetOrthographic(m_ViewportSize.y, -5.0f, 5.0f);
 
-	
+	m_SettingsPanel.SetContext(m_Fractal);
+
 }
 
 void EditorLayer::OnDetach()
@@ -53,6 +55,7 @@ void EditorLayer::OnUpdate(Timestep ts)
 	{
 		m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+		Renderer::OnWindowResized((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 
 	}
 	// Update
@@ -60,11 +63,25 @@ void EditorLayer::OnUpdate(Timestep ts)
 	{
 
 	}
+	m_Controller.OnUpdate(ts);
 
 	Engine::Renderer2D::ResetStats();
 	m_Framebuffer->Bind();
 	Engine::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 	Engine::RenderCommand::Clear();
+	m_CameraEntity.GetComponent<CameraComponent>().Camera.SetOrthographic(m_ViewportSize.y, -5.0f, 5.0f);
+
+	if (m_Fractal->GetShader())
+	{
+		m_Fractal->Update(m_ViewportSize, m_Controller.translation, m_Controller.zoom, 200);
+
+		Renderer2D::BeginScene(m_CameraEntity.GetComponent<CameraComponent>().Camera, m_CameraEntity.GetComponent<TransformComponent>().GetTransform(), m_Fractal->GetShader());
+		Renderer2D::DrawQuad({ 0.0f, 0.0f, 0.0f }, m_ViewportSize, { 0.8f, 0.2f, 0.2f, 1.0f });
+		Renderer2D::EndScene();
+
+	}
+
+
 
 	m_ActiveScene->OnUpdateRuntime(ts);
 	m_Framebuffer->Unbind();
@@ -131,14 +148,11 @@ void EditorLayer::OnImGuiRender()
 
 		ImGui::EndMenuBar();
 	}
-	//m_SceneHierarchyPanel.OnImGuiRender();
 
 	ImGui::Begin("Render Stats");
 	ImGui::Text("FPS: %f", 1.0f / Application::Get().GetTimestep());
 	ImGui::Text("");
-	ImGui::Text("Curve Stats:");
-	//ImGui::Text("Curve Render Time (ms): %.2f", duration * 1000);
-	//ImGui::Text("Control points count: %d" ,points.size());
+
 	auto stats = Engine::Renderer2D::GetStats();
 	ImGui::Text("");
 	ImGui::Text("Renderer Stats:");
@@ -174,8 +188,7 @@ void EditorLayer::OnImGuiRender()
 
 void EditorLayer::OnEvent(Engine::Event& e)
 {
-	static_cast<CameraController*>(m_CameraEntity.GetComponent<NativeScriptComponent>().Instance)->OnEvent(e);
-
+	m_Controller.OnEvent(e);
 	EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(EditorLayer::OnKeyPressed));
 	dispatcher.Dispatch<MouseButtonPressedEvent>(BIND_EVENT_FN(EditorLayer::OnMouseClick));
@@ -185,7 +198,7 @@ void EditorLayer::OnEvent(Engine::Event& e)
 bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
 {
 	
-	return true;
+	return false;
 }
 
 bool EditorLayer::OnMouseClick(MouseButtonPressedEvent& e)
@@ -193,14 +206,14 @@ bool EditorLayer::OnMouseClick(MouseButtonPressedEvent& e)
 	if ( m_ViewportHovered)
 	{
 	}
-	return true;
+	return false;
 }
 
 bool EditorLayer::OnMouseMoved(MouseMovedEvent& e)
 {
 	if (!Input::IsMouseButtonPressed(Mouse::ButtonLeft))
 		return false;
-	return true;
+	return false;
 
 }
 

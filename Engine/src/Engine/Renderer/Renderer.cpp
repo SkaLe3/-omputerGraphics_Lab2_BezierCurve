@@ -23,6 +23,13 @@ namespace Engine {
 		m_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
 	}
 
+	void Renderer::BeginScene(const Camera& camera, const glm::mat4& transform)
+	{
+		glm::mat4 viewProj = camera.GetProjection() * glm::inverse(transform);
+		m_SceneData->ViewProjectionMatrix = viewProj;
+
+	}
+
 	void Renderer::EndScene()
 	{
 

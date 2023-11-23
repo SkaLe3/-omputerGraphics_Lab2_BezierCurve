@@ -1,7 +1,7 @@
 #pragma once
 #include <Engine.h>
 
-class CameraController : public Engine::ScriptableEntity
+class CameraController
 {
 public:
 	void OnCreate()
@@ -17,32 +17,24 @@ public:
 	void OnUpdate(Engine::Timestep ts)
 	{
 		using namespace Engine;
-		auto& translation = GetComponent<Engine::TransformComponent>().Translation;
-		auto& rotation = GetComponent<Engine::TransformComponent>().Rotation;
-
+		const float d = 0.01 / zoom;
 
 		if (Input::IsKeyPressed(Key::A)) {
-			translation.x -= cos(glm::radians(rotation.z)) * m_CameraTranslationSpeed * ts;
-			translation.y -= sin(glm::radians(rotation.z)) * m_CameraTranslationSpeed * ts;
+			translation.x -= d;
 		}
 		if (Input::IsKeyPressed(Key::D)) {
-			translation.x += cos(glm::radians(rotation.z)) * m_CameraTranslationSpeed * ts;
-			translation.y += sin(glm::radians(rotation.z)) * m_CameraTranslationSpeed * ts;
+			translation.x += d;
 		}
 
 		if (Input::IsKeyPressed(Key::S)) {
-			translation.x -= -sin(glm::radians(rotation.z)) * m_CameraTranslationSpeed * ts;
-			translation.y -= cos(glm::radians(rotation.z)) * m_CameraTranslationSpeed * ts;
+			translation.y -= d;
 		}
 		if (Input::IsKeyPressed(Key::W)) {
-			translation.x += -sin(glm::radians(rotation.z)) * m_CameraTranslationSpeed * ts;
-			translation.y += cos(glm::radians(rotation.z)) * m_CameraTranslationSpeed * ts;
+			translation.y += d;
 		}
-
-		m_CameraTranslationSpeed = GetComponent<CameraComponent>().Camera.GetOrthographicSize();
-		//GetComponent<CameraComponent>().Camera.RecalculateProjection();
 	}
-	void OnEvent(Event& e)
+
+	void OnEvent(Engine::Event& e)
 	{
 		using namespace Engine;
 		EventDispatcher dispatcher(e);
@@ -52,13 +44,17 @@ public:
 
 private:
 
-	bool OnMouseScrolled(MouseScrolledEvent& e)
+	bool OnMouseScrolled(Engine::MouseScrolledEvent& e)
 	{
-		auto& camera = GetComponent<CameraComponent>().Camera;
-		camera.SetOrthographicSize(std::max(camera.GetOrthographicSize() - e.GetYOffset() * 5.0f, 0.25f));
+		zoom += e.GetYOffset() * 0.01 * zoom;
+		if (zoom < 0.1)
+		{
+			zoom = 0.1;
+		}
+
 		return true;
 	}
-private:
-
-	float m_CameraTranslationSpeed = 5.0f;
+public:
+	glm::vec2 translation = { 0.0f, 0.0f };
+	double zoom = 1.0f;
 };

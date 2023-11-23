@@ -6,6 +6,8 @@
 #include "SubTexture2D.h"
 #include "Camera.h"
 
+#include "Engine/Renderer/Shader.h"
+
 namespace Engine {
 
 	class Renderer2D
@@ -15,6 +17,7 @@ namespace Engine {
 		static void ShutDown();
 
 		static void BeginScene(const Camera& camera, const glm::mat4& transform);
+		static void BeginScene(const Camera& camera, const glm::mat4& transform, Ref<Shader> shader);
 		static void BeginScene(const EditorCamera& camera);
 		static void BeginScene(const OrthographicCamera& camera);
 		static void EndScene();
