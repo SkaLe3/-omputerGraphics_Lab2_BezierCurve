@@ -73,7 +73,7 @@ void EditorLayer::OnUpdate(Timestep ts)
 
 	if (m_Fractal->GetShader())
 	{
-		m_Fractal->Update(m_ViewportSize, m_Controller.translation, m_Controller.zoom, 200);
+		m_Fractal->Update(m_ViewportSize, m_Controller.translation, m_Controller.zoom, 40);
 
 		Renderer2D::BeginScene(m_CameraEntity.GetComponent<CameraComponent>().Camera, m_CameraEntity.GetComponent<TransformComponent>().GetTransform(), m_Fractal->GetShader());
 		Renderer2D::DrawQuad({ 0.0f, 0.0f, 0.0f }, m_ViewportSize, { 0.8f, 0.2f, 0.2f, 1.0f });

@@ -51,6 +51,17 @@ vec2 N(float angle)
 void main() 
 {
   vec2 uv = (gl_FragCoord.xy - .5 * v_ScreenSize.xy) / v_ScreenSize.y; // Normalized screen coordinates
+
+
+
+  // Apply zoom factor
+  uv /= v_Zoom;
+
+    // Apply panning
+  uv += v_Center;
+
+
+
   uv *= 2.;
   vec3 col = vec3(0);
 
@@ -58,22 +69,24 @@ void main()
   uv.x = abs(uv.x);
   // End reflect around y-axis
 
-  // Start move up
+  // Move the fractal pattern upwards
   uv.y += tan((5. / 6.) * 3.1415) * 0.5;
-  // End move up
 
-  // Start code for reflection
+
+  // Calculate normal vector for the first reflection
   vec2 n = N((5. / 6.) * 3.1415);
   float d = dot(uv - vec2(.5,0.), n);
-  uv -= n * max(0., d) * 2;
-  // End code for reflection
 
+  // Reflect the uv coordinates based on the normal vector
+  uv -= n * max(0., d) * 2;
+
+  // Calculate normal vector for the second reflection
   n = N((2. / 3.) * 3.1415);
   uv.x += .5;
-  float scale = 1.;
+  float scale = 1.0 / v_Zoom;
 
-  // Start fold iterations
-  for (int i = 0; i < 4; i++)
+  // Iterative folding
+  for (int i = 0; i < 40; i++)
   {
     uv *= 3.;
     scale *= 3.;
@@ -82,9 +95,11 @@ void main()
     uv.x -= .5;
     uv -= n * min(0., dot(uv, n)) * 2.;
   }
-  // End fold iterations
 
+  // Calculate the distance of the modified uv coordinates from a line segment
   d = length(uv - vec2(clamp(uv.x, -1., 1.), 0));
+
+  // Add color based on the distance and screen size
   col += smoothstep(2. / v_ScreenSize.y, .0, d / scale);
 
   color = vec4(col, 1.0);
