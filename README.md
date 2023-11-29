@@ -22,20 +22,24 @@ After cloning run GenerateProjects.bat script file to generate a Visual Studio 2
 3. Select Startup project which you want to compile
 ## How to use:
 ### Bezier Curve Editor
-1. All instructions provided in application interface
+1. All instructions provided in an application interface
 ### Bucket-Filling Tool
-1. Select image you want to fill on Scene Hierarchy Panel
-2. Select algorithm and pick color you want to use on Settings Panel
-3. Use left mouse button to fill areas
+1. Select the image you want to fill on the Scene Hierarchy Panel
+2. Select the algorithm and pick the color you want to use on the Settings Panel
+3. Use the left mouse button to fill areas
 ### Fractals
-1. Select the desired fractal, its color and the number of iterations
+1. Select the desired fractal, its color, and the number of iterations
 2. Use WASD to navigate
-3. Use Mouse Wheel to zoom
-4. Use the Left Mouse Button to regenerate Barnsley Fern fractal
+3. Use the Mouse Wheel to zoom
+4. Use the Left Mouse Button to regenerate the Barnsley Fern fractal
 
-# Projects quality and spent time
-All projects where finished within small amount of time each and the code quality is poor. The code needs to be refactored, optimized and finished to the end with new architecture of application. But there is no reason to refactor and finish, because the essence is in the implementation of the idea of algorithms and in studying their work, and not in writing a high-quality software product.
+# About projects
+  All projects were finished within a small amount of time each and the code quality is poor. The code needs to be refactored, optimized and finished to the end with the new architecture of an application. But there is no reason to refactor and finish because the essence is in the implementation of the idea of algorithms and in studying their work, and not in writing a high-quality software product. <br>
+![Bezier Curve Editor](https://github.com/SkaLe3/KPI-ComputerGraphics-Labs/blob/bdbf3c601b67faaa7129f8dbed36f4b05db3b1e1/curves.jpg)
+![Fractals Mandelbrot](https://github.com/SkaLe3/KPI-ComputerGraphics-Labs/blob/bdbf3c601b67faaa7129f8dbed36f4b05db3b1e1/Mandelbrot.jpg)
+![Fractals Fern](https://github.com/SkaLe3/KPI-ComputerGraphics-Labs/blob/bdbf3c601b67faaa7129f8dbed36f4b05db3b1e1/fern.jpg)
+
  
 # Framework used
-Fully recoded clone of earlier version of TheCherno/Hazel with some custom changes
+Fully recoded clone of an earlier version of TheCherno/Hazel with some custom changes
 
