@@ -110,4 +110,12 @@ namespace Engine {
 
 		std::vector<std::vector<glm::vec2>> Polygons;
 	};
+
+	struct ControlPointComponent
+	{
+		glm::vec3 Translation{ 0.0f, 0.0f, 0.0f };
+		ControlPointComponent() = default;
+		ControlPointComponent(const ControlPointComponent&) = default;
+		ControlPointComponent(const glm::vec3& translation) : Translation(translation) {}
+	};
 }

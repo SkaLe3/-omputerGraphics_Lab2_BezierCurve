@@ -84,7 +84,7 @@ void EditorLayer::OnUpdate(Timestep ts)
 		}
 		if (Ref<MandelbrotSet> mandelbrot = dynamic_pointer_cast<MandelbrotSet>(m_SettingsPanel.GetFractal()); mandelbrot)
 		{
-			mandelbrot->Update(m_ViewportSize, m_Controller.translation, m_Controller.zoom, m_SettingsPanel.KochIterations);
+			mandelbrot->Update(m_ViewportSize, m_Controller.translation, m_Controller.zoom, m_SettingsPanel.MandelbrotIterations);
 		}
 		if (Ref<BarnsleyFern> fern = dynamic_pointer_cast<BarnsleyFern>(m_SettingsPanel.GetFractal()); fern)
 		{
