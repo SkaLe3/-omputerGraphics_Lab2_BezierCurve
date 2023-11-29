@@ -9,7 +9,7 @@ Laboratory works for Computer Graphics subject at KPI.
    - Scanline Fill
    - Span Fill
 3. Fractals Viewer <br>
-   Fractals used:
+   Fractals used (implemented in glsl):
    - Koch snowflake
    - Mandelbrot Set
    - Barnsley Fern
