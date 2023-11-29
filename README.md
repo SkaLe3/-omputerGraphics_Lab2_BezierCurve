@@ -34,7 +34,7 @@ After cloning run GenerateProjects.bat script file to generate a Visual Studio 2
 4. Use the Left Mouse Button to regenerate Barnsley Fern fractal
 
 # Projects quality and spent time
-All projects where finished within small amont of time each and the code quality is poor. The code needs to be refactored, optimized and finished to the end with new architecture of application. But there is no reason to refactor and finish, because the essence is in the implementation of the idea of algorithms and in studying their work, and not in writing a high-quality software product.
+All projects where finished within small amount of time each and the code quality is poor. The code needs to be refactored, optimized and finished to the end with new architecture of application. But there is no reason to refactor and finish, because the essence is in the implementation of the idea of algorithms and in studying their work, and not in writing a high-quality software product.
  
 # Framework used
 Fully recoded clone of earlier version of TheCherno/Hazel with some custom changes
