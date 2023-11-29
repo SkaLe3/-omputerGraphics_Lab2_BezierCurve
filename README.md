@@ -10,9 +10,9 @@ Laboratory works for Computer Graphics subject at KPI.
    - Span Fill
 3. Fractals Viewer <br>
    Fractals used (implemented in glsl):
-   - Koch snowflake
-   - Mandelbrot Set
-   - Barnsley Fern
+   - Koch snowflake shader
+   - Mandelbrot Set shader
+   - Barnsley Fern shader
 
 # How to try:
 1. Downloading the repository:
