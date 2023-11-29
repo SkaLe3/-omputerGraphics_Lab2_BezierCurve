@@ -23,15 +23,6 @@ uniform vec3 u_Color;
 
 #define I(M, V) T( ( (U-V) * inverse(M) + C) / 12., -15.) // Find color of seed pixel
 
-vec4 blendColors(vec4 col, vec3  newcol) {
-    float maxComponent = max(max(newcol.r, newcol.g),newcol.b);
-    maxComponent = max(maxComponent, 0.0001);
-    vec4 scaled = vec4(newcol, 1.) / maxComponent;
-    vec4 result = col * scaled;
-
-    return result;
-}
-
 void main() 
 {
     vec2 C = vec2(5.5, 1);

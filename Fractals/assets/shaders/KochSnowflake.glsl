@@ -1,4 +1,3 @@
-
 #type vertex
 #version 330 core
 
@@ -45,7 +44,6 @@ void main()
 
   // Move the fractal pattern upwards
   uv.y += tan((5. / 6.) * 3.1415) * 0.5;
-
 
   // Calculate normal vector for the first reflection
   vec2 n = N((5. / 6.) * 3.1415);
