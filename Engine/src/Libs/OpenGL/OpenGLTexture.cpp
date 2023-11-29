@@ -16,11 +16,18 @@ namespace Engine {
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 		glTextureStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height);
 
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+// 		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+// 		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+// 
+// 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
+// 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		// Fractals
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_MIPMAP);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_MIPMAP);
+
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	}
 
 	OpenGLTexture2D::OpenGLTexture2D(const std::string& path) 
@@ -65,6 +72,13 @@ namespace Engine {
 
 
 	
+
+	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height, uint32_t rendererID)
+		: m_Width(width), m_Height(height), m_RendererID(rendererID)
+	{
+		m_InternalFormat = GL_RGBA8;
+		m_DataFormat = GL_RGBA;
+	}
 
 	OpenGLTexture2D::~OpenGLTexture2D()
 	{

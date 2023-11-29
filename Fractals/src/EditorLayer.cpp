@@ -19,7 +19,6 @@
 EditorLayer::EditorLayer()
 	: Layer()
 {
-	m_Fractal = CreateRef<Fractal>();
 }
 
 void EditorLayer::OnAttach()
@@ -29,6 +28,7 @@ void EditorLayer::OnAttach()
 	fbSpec.Height = 900;
 	m_Framebuffer = Framebuffer::Create(fbSpec);
 	m_ActiveScene = CreateRef<Scene>();
+	m_FramebufferTexture = Texture2D::Create(1600, 900);
 
 
 	Application::Get().GetWindow().SetVSync(true);
@@ -38,7 +38,6 @@ void EditorLayer::OnAttach()
 	m_CameraEntity.AddComponent<CameraComponent>();
 	m_CameraEntity.GetComponent<CameraComponent>().Camera.SetOrthographic(m_ViewportSize.y, -5.0f, 5.0f);
 
-	m_SettingsPanel.SetContext(m_Fractal);
 
 }
 
@@ -57,6 +56,10 @@ void EditorLayer::OnUpdate(Timestep ts)
 		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		Renderer::OnWindowResized((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 
+		m_FramebufferTexture = Texture2D::Create(m_ViewportSize.x, m_ViewportSize.y);
+		uint8_t* textureData = m_Framebuffer->GetPixels();
+		m_FramebufferTexture->SetData(textureData, m_ViewportSize.x * m_ViewportSize.y * 4);
+		delete[] textureData;
 	}
 	// Update
 	if (m_ViewportFocused)
@@ -66,25 +69,53 @@ void EditorLayer::OnUpdate(Timestep ts)
 	m_Controller.OnUpdate(ts);
 
 	Engine::Renderer2D::ResetStats();
+
+
 	m_Framebuffer->Bind();
-	Engine::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
+	Engine::RenderCommand::SetClearColor({ 0.0f, 0.0f, 0.0f, 1.0f });
 	Engine::RenderCommand::Clear();
 	m_CameraEntity.GetComponent<CameraComponent>().Camera.SetOrthographic(m_ViewportSize.y, -5.0f, 5.0f);
 
-	if (m_Fractal->GetShader())
+	if (m_SettingsPanel.GetFractal())
 	{
-		m_Fractal->Update(m_ViewportSize, m_Controller.translation, m_Controller.zoom, 40);
+		if (Ref<KochSnowfkale> snowflake = dynamic_pointer_cast<KochSnowfkale>(m_SettingsPanel.GetFractal()); snowflake)
+		{
+			snowflake->Update(m_ViewportSize, m_Controller.translation, m_Controller.zoom, m_SettingsPanel.KochIterations, m_SettingsPanel.SnowflakeColor);
+		}
+		if (Ref<MandelbrotSet> mandelbrot = dynamic_pointer_cast<MandelbrotSet>(m_SettingsPanel.GetFractal()); mandelbrot)
+		{
+			mandelbrot->Update(m_ViewportSize, m_Controller.translation, m_Controller.zoom, m_SettingsPanel.KochIterations);
+		}
+		if (Ref<BarnsleyFern> fern = dynamic_pointer_cast<BarnsleyFern>(m_SettingsPanel.GetFractal()); fern)
+		{
+			fern->Update(m_ViewportSize, m_SettingsPanel.FernColor);
 
-		Renderer2D::BeginScene(m_CameraEntity.GetComponent<CameraComponent>().Camera, m_CameraEntity.GetComponent<TransformComponent>().GetTransform(), m_Fractal->GetShader());
-		Renderer2D::DrawQuad({ 0.0f, 0.0f, 0.0f }, m_ViewportSize, { 0.8f, 0.2f, 0.2f, 1.0f });
+			if (Input::IsMouseButtonPressed(Mouse::Button0) && m_ViewportHovered)
+				fern->GetShader()->SetInt("u_Reset", 1);
+			else
+				fern->GetShader()->SetInt("u_Reset", 0);
+		}
+
+		Renderer2D::BeginScene(m_CameraEntity.GetComponent<CameraComponent>().Camera, 
+			m_CameraEntity.GetComponent<TransformComponent>().GetTransform(), m_SettingsPanel.GetFractal()->GetShader());
+		Renderer2D::DrawQuad({ 0.0f, 0.0f, 0.0f }, m_ViewportSize, m_FramebufferTexture);
 		Renderer2D::EndScene();
+
+		if (Ref<BarnsleyFern> fern = dynamic_pointer_cast<BarnsleyFern>(m_SettingsPanel.GetFractal()); fern)
+		{
+			m_FramebufferTexture = Texture2D::Create(m_ViewportSize.x, m_ViewportSize.y);
+			uint8_t* textureData = m_Framebuffer->GetPixels();
+			m_FramebufferTexture->SetData(textureData, m_ViewportSize.x * m_ViewportSize.y * 4);
+			delete[] textureData;
+		}
 
 	}
 
-
-
 	m_ActiveScene->OnUpdateRuntime(ts);
 	m_Framebuffer->Unbind();
+
+
+
 }
 
 void EditorLayer::OnImGuiRender()
@@ -205,6 +236,7 @@ bool EditorLayer::OnMouseClick(MouseButtonPressedEvent& e)
 {
 	if ( m_ViewportHovered)
 	{
+
 	}
 	return false;
 }

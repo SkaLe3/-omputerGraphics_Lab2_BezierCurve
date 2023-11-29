@@ -156,8 +156,6 @@ namespace Engine {
 	void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform, Ref<Shader> shader)
 	{
 		s_Data.TextureShader = shader;
-		s_Data.TextureShader->Bind();
-
 
 		glm::mat4 viewProj = camera.GetProjection() * glm::inverse(transform);
 

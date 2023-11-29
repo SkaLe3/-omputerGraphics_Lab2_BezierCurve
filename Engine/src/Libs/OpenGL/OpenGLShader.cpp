@@ -208,6 +208,7 @@ namespace Engine {
 		UploadUniformMat4(name, value);
 	}
 
+
 	void OpenGLShader::UploadUniformInt(const std::string& name, const int value)
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
@@ -255,5 +256,6 @@ namespace Engine {
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 	}
+
 
 }

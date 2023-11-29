@@ -3,44 +3,23 @@
 #version 330 core
 
 layout(location = 0) in vec3 a_Position;
-
-out vec2 v_ScreenPos;
-out vec2 v_ScreenSize;
-out float v_ScreenRatio;
-out vec2 v_Center;
-out float v_Zoom;
-flat out int v_itr;
-
-
 uniform mat4 u_ViewProjection;
-
-uniform float u_ScreenRatio;
-uniform vec2 u_ScreenSize;
-uniform vec2 u_Center;
-uniform float u_Zoom;
-uniform int u_itr;
 
 void main()
 {
   gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
-  v_ScreenPos = gl_Position.xy;
-  v_ScreenSize = u_ScreenSize;
-  v_ScreenRatio = u_ScreenRatio;
-  v_Center = u_Center;
-  v_Zoom = u_Zoom;
-  v_itr = u_itr;
 }
 
 #type fragment
 #version 330 core
 
 out vec4 color;
-in vec2 v_ScreenPos;
-in vec2 v_ScreenSize;
-in float v_ScreenRatio;
-in vec2 v_Center;
-in float v_Zoom;
-flat in int v_itr;
+
+uniform vec2 u_ScreenSize;
+uniform vec2 u_Center;
+uniform float u_Zoom;
+uniform int u_itr;
+uniform vec3 u_Color;
 
 // Returns unit vector in direction of specified angle
 vec2 N(float angle)
@@ -50,24 +29,19 @@ vec2 N(float angle)
 
 void main() 
 {
-  vec2 uv = (gl_FragCoord.xy - .5 * v_ScreenSize.xy) / v_ScreenSize.y; // Normalized screen coordinates
-
-
+  vec2 uv = (gl_FragCoord.xy - .5 * u_ScreenSize.xy) / u_ScreenSize.y; // Normalized screen coordinates
 
   // Apply zoom factor
-  uv /= v_Zoom;
+  uv /= u_Zoom *2.0;
 
     // Apply panning
-  uv += v_Center;
-
-
+  uv += u_Center;
 
   uv *= 2.;
   vec3 col = vec3(0);
 
   // Start reflect around y-axis
   uv.x = abs(uv.x);
-  // End reflect around y-axis
 
   // Move the fractal pattern upwards
   uv.y += tan((5. / 6.) * 3.1415) * 0.5;
@@ -83,10 +57,10 @@ void main()
   // Calculate normal vector for the second reflection
   n = N((2. / 3.) * 3.1415);
   uv.x += .5;
-  float scale = 1.0 / v_Zoom;
+  float scale = 1.0 / u_Zoom ;
 
   // Iterative folding
-  for (int i = 0; i < 40; i++)
+  for (int i = 0; i < u_itr; i++)
   {
     uv *= 3.;
     scale *= 3.;
@@ -100,7 +74,7 @@ void main()
   d = length(uv - vec2(clamp(uv.x, -1., 1.), 0));
 
   // Add color based on the distance and screen size
-  col += smoothstep(2. / v_ScreenSize.y, .0, d / scale);
-
+  col += smoothstep(2. / u_ScreenSize.y, .0, d / scale);
+  col *= u_Color;
   color = vec4(col, 1.0);
 }

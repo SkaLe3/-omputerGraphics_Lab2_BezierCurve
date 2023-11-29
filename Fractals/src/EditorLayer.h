@@ -6,7 +6,7 @@
 #include "Panels/SettingsPanel.h"
 #include <glm/glm.hpp>
 #include "CameraController.h"
-#include "Fractals.h"
+#include "Fractals/Fractals.h"
 
 using namespace Engine;
 
@@ -34,14 +34,11 @@ private:
 	CameraController m_Controller;
 
 	Ref<Framebuffer> m_Framebuffer;
+	Ref<Texture2D> m_FramebufferTexture;
 
 	bool m_ViewportFocused = false;
 	bool m_ViewportHovered = false;
 	glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
-
-	// Shaders
-	Ref<Fractal> m_Fractal;
-
 
 	// Panels
 	SettingsPanel m_SettingsPanel;

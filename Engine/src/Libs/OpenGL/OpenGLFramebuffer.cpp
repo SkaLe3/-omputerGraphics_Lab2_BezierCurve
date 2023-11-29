@@ -72,6 +72,15 @@ namespace Engine {
 		m_Specification.Height = height;
 
 		Invalidate();
+	}	
+
+	uint8_t* OpengGLFramebuffer::GetPixels() const
+	{
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_RendererID);
+		uint8_t* pixels = new uint8_t[m_Specification.Width * m_Specification.Height * 4];
+		// Read the framebuffer data
+		glReadPixels(0, 0, m_Specification.Width, m_Specification.Height, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+		return pixels;
 	}
 
 }

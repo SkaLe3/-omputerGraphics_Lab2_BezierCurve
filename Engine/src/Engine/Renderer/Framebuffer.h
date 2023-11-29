@@ -25,6 +25,7 @@ namespace Engine {
 		virtual const FramebufferSpecification& GetSpecificaion() const = 0;
 
 		virtual uint32_t GetColorAttachmentRendererID() const = 0;
+		virtual uint8_t* GetPixels() const = 0;
 
 		static Ref<Framebuffer> Create(const FramebufferSpecification& spec);
 	private:

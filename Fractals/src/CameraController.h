@@ -46,7 +46,7 @@ private:
 
 	bool OnMouseScrolled(Engine::MouseScrolledEvent& e)
 	{
-		zoom += e.GetYOffset() * 0.01 * zoom;
+		zoom += e.GetYOffset() * 0.02 * zoom;
 		if (zoom < 0.1)
 		{
 			zoom = 0.1;
@@ -56,5 +56,5 @@ private:
 	}
 public:
 	glm::vec2 translation = { 0.0f, 0.0f };
-	double zoom = 1.0f;
+	double zoom = 0.8f;
 };
