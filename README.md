@@ -1,4 +1,4 @@
-# ComputerGraphics-Labs
+# KPI-computer-graphics-labs
 Laboratory works for Computer Graphics subject at KPI.
 ## Projects:
 1. Bezier Curve Editor
